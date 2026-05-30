@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { TimeLog, LogCategory, TimerSettings, RunningTimerCache } from '../types';
+import { generateUUID } from '../utils/uuid';
 import {
   initializeStorage,
   saveLogs,
@@ -118,7 +119,6 @@ export const useTimeLogStore = create<TimeLogState>((set, get) => ({
 
   addCategory: async (name: string, color: string) => {
     const { categories } = get();
-    const { generateUUID } = require('../utils/uuid');
     const newCategory: LogCategory = {
       id: generateUUID(),
       name,

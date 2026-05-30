@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Alert, Platform } from 'react-native';
-import * as FileSystem from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { useTimeLogStore } from '../store/timeLogStore';
 import { generateCSV, generateExportFileName } from '../utils/csvGenerator';
@@ -41,12 +41,11 @@ export function useLogExport() {
         // 生成 CSV 字符串
         const csvString = generateCSV(exportLogs);
         const fileName = generateExportFileName();
-        const fileUri = FileSystem.documentDirectory + fileName;
 
-        // 写入临时文件
-        await FileSystem.writeAsStringAsync(fileUri, csvString, {
-          encoding: FileSystem.EncodingType.UTF8,
-        });
+        // 使用 SDK 56 新版 API 写入文件
+        const file = new File(Paths.document, fileName);
+        file.write(csvString);
+        const fileUri = file.uri;
 
         // 检查是否支持分享
         const isAvailable = await Sharing.isAvailableAsync();
